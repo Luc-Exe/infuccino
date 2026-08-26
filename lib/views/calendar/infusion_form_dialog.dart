@@ -223,10 +223,11 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
   void _submitForm() {
     if (!_formKey.currentState!.validate()) return;
 
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
     final weight = double.tryParse(_weightController.text) ?? _selectedType.defaultWeight;
     final volume = double.tryParse(_volumeController.text);
     final finalProductName = _productNameController.text.trim().isEmpty
-        ? _selectedType.label
+        ? _selectedType.labelFor(settings.languageCode)
         : _productNameController.text.trim();
 
     final infusionProvider = Provider.of<InfusionProvider>(context, listen: false);
@@ -269,6 +270,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
     final productProvider = Provider.of<ProductProvider>(context);
     final availableProducts = productProvider.allProducts
         .where((p) => p.category == _selectedCategory)
@@ -316,8 +318,8 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         const SizedBox(width: 8),
                         Text(
                           widget.existingLog != null
-                              ? (settings.languageCode == 'en' ? 'Edit Infusion' : 'Editar Infusión')
-                              : (settings.languageCode == 'en' ? 'New Infusion' : 'Nueva Infusión'),
+                              ? (isEn ? 'Edit Infusion' : 'Editar Infusión')
+                              : (isEn ? 'New Infusion' : 'Nueva Infusión'),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -336,7 +338,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
 
                 // Date and Time Row (Modifiable)
                 Text(
-                  settings.languageCode == 'en' ? 'Date & Time' : 'Fecha y Hora',
+                  isEn ? 'Date & Time' : 'Fecha y Hora',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -414,7 +416,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
 
                 // Category Selector (Yerba Mate / Café / Té)
                 Text(
-                  settings.languageCode == 'en' ? 'Category' : 'Categoría de Infusión',
+                  isEn ? 'Category' : 'Categoría de Infusión',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -466,7 +468,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         ),
                         label: Center(
                           child: Text(
-                            settings.languageCode == 'en' ? 'Coffee' : 'Café',
+                            isEn ? 'Coffee' : 'Café',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -497,7 +499,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         ),
                         label: Center(
                           child: Text(
-                            settings.languageCode == 'en' ? 'Tea' : 'Té',
+                            isEn ? 'Tea' : 'Té',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -522,7 +524,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
 
                 // Specific Type Chips (Espresso, V60, Drip, French, Moka, Instantáneo, Cold, Saquito, Hebras)
                 Text(
-                  settings.languageCode == 'en' ? 'Preparation Method' : 'Tipo de Preparación',
+                  isEn ? 'Preparation Method' : 'Tipo de Preparación',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -542,7 +544,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         size: 18,
                         color: isSelected ? Colors.black87 : accentColor,
                       ),
-                      label: Text(type.label),
+                      label: Text(type.labelFor(settings.languageCode)),
                       selected: isSelected,
                       selectedColor: accentColor,
                       backgroundColor: theme.surfaceColor,
@@ -561,7 +563,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
 
                 // Select Product from Catalog or Custom
                 Text(
-                  settings.languageCode == 'en' ? 'Product / Variety' : 'Producto / Variedad',
+                  isEn ? 'Product / Variety' : 'Producto / Variedad',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -583,16 +585,16 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         dropdownColor: theme.surfaceColor,
                         value: _selectedProduct,
                         hint: Text(
-                          settings.languageCode == 'en'
-                              ? 'Select from saved list...'
-                              : 'Seleccionar de la lista guardada...',
+                            isEn
+                                ? 'Select from saved list...'
+                                : 'Seleccionar de la lista guardada...',
                           style: TextStyle(color: theme.subtextColor, fontSize: 13),
                         ),
                         items: [
                           DropdownMenuItem<Product?>(
                             value: null,
                             child: Text(
-                              settings.languageCode == 'en'
+                              isEn
                                   ? '-- Custom input --'
                                   : '-- Entrada personalizada --',
                               style: TextStyle(color: theme.lavenderColor, fontSize: 13),
@@ -635,7 +637,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                 TextFormField(
                   controller: _productNameController,
                   decoration: InputDecoration(
-                    labelText: settings.languageCode == 'en' ? 'Product name' : 'Nombre del producto',
+                    labelText: isEn ? 'Product name' : 'Nombre del producto',
                     hintText: _selectedCategory == InfusionCategory.mate
                         ? 'Ej: Canarias Serena, Playadito'
                         : _selectedCategory == InfusionCategory.cafe
@@ -645,7 +647,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                   ),
                   validator: (v) {
                     if (v == null || v.trim().isEmpty) {
-                      return settings.languageCode == 'en'
+                      return isEn
                           ? 'Please enter or select a product'
                           : 'Por favor ingresa o selecciona un producto';
                     }
@@ -663,7 +665,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         controller: _weightController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         decoration: InputDecoration(
-                          labelText: settings.languageCode == 'en' ? 'Dry Weight' : 'Peso Seco',
+                           labelText: isEn ? 'Dry Weight' : 'Peso Seco',
                           hintText: '18',
                           suffixText: settings.weightUnit,
                           prefixIcon: const Icon(Icons.scale_rounded, size: 20),
@@ -681,7 +683,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                         controller: _volumeController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         decoration: InputDecoration(
-                          labelText: settings.languageCode == 'en' ? 'Liquid Volume' : 'Agua / Leche',
+                           labelText: isEn ? 'Liquid Volume' : 'Agua / Leche',
                           hintText: '250',
                           suffixText: settings.volumeUnit,
                           prefixIcon: const Icon(Icons.water_drop_rounded, size: 20),
@@ -709,7 +711,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      settings.languageCode == 'en' ? 'Session Rating' : 'Calificación de la sesión',
+                      isEn ? 'Session Rating' : 'Calificación de la sesión',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -735,7 +737,7 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                   controller: _notesController,
                   maxLines: 2,
                   decoration: InputDecoration(
-                    labelText: settings.languageCode == 'en' ? 'Tasting notes (optional)' : 'Notas de preparación y cata (opcional)',
+                    labelText: isEn ? 'Tasting notes (optional)' : 'Notas de preparación y cata (opcional)',
                     hintText: 'Ej: Extracción limpia, crema dorada, aroma persistente...',
                     prefixIcon: const Icon(Icons.edit_note_rounded, size: 20),
                   ),
@@ -756,9 +758,9 @@ class _InfusionFormDialogState extends State<InfusionFormDialog> {
                     ),
                     icon: const Icon(Icons.check_circle_rounded),
                     label: Text(
-                      widget.existingLog != null
-                          ? (settings.languageCode == 'en' ? 'Save Changes' : 'Guardar Cambios')
-                          : (settings.languageCode == 'en' ? 'Log Infusion' : 'Registrar Infusión'),
+                        widget.existingLog != null
+                          ? (isEn ? 'Save Changes' : 'Guardar Cambios')
+                          : (isEn ? 'Log Infusion' : 'Registrar Infusión'),
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     onPressed: _submitForm,

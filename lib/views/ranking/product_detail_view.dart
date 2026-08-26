@@ -6,6 +6,7 @@ import '../../models/infusion_type.dart';
 import '../../models/product.dart';
 import '../../providers/infusion_provider.dart';
 import '../../providers/product_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../calendar/infusion_form_dialog.dart';
 import '../widgets/catppuccin_card.dart';
@@ -37,18 +38,22 @@ class ProductDetailView extends StatelessWidget {
 
   void _confirmDelete(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context, listen: false);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final isEn = settings.languageCode == 'en';
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('¿Eliminar producto?', style: TextStyle(color: theme.textColor)),
+        title: Text(isEn ? 'Delete product?' : '¿Eliminar producto?', style: TextStyle(color: theme.textColor)),
         content: Text(
-          '¿Estás seguro de eliminar "${product.name}" de la lista?',
+          isEn
+              ? 'Are you sure you want to remove "${product.name}" from the list?'
+              : '¿Estás seguro de eliminar "${product.name}" de la lista?',
           style: TextStyle(color: theme.subtextColor),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('Cancelar', style: TextStyle(color: theme.subtextColor)),
+            child: Text(isEn ? 'Cancel' : 'Cancelar', style: TextStyle(color: theme.subtextColor)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: theme.redColor),
@@ -57,7 +62,7 @@ class ProductDetailView extends StatelessWidget {
               Navigator.of(ctx).pop();
               Navigator.of(context).pop();
             },
-            child: const Text('Eliminar', style: TextStyle(color: Colors.white)),
+            child: Text(isEn ? 'Delete' : 'Eliminar', style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -67,6 +72,8 @@ class ProductDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
+    final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
 
     Color accentColor;
     switch (product.category) {
@@ -92,12 +99,12 @@ class ProductDetailView extends StatelessWidget {
         title: Text(product.name),
         actions: [
           IconButton(
-            tooltip: 'Editar producto',
+            tooltip: isEn ? 'Edit product' : 'Editar producto',
             icon: const Icon(Icons.edit_outlined),
             onPressed: () => _openEditProduct(context),
           ),
           IconButton(
-            tooltip: 'Eliminar producto',
+            tooltip: isEn ? 'Delete product' : 'Eliminar producto',
             icon: Icon(Icons.delete_outline_rounded, color: theme.redColor),
             onPressed: () => _confirmDelete(context),
           ),
@@ -115,7 +122,7 @@ class ProductDetailView extends StatelessWidget {
             ),
             icon: Icon(product.category.icon),
             label: Text(
-              'Preparar Infusión con ${product.name}',
+              isEn ? 'Brew ${product.name}' : 'Preparar Infusión con ${product.name}',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             ),
             onPressed: () => _openBrewSession(context),
@@ -152,11 +159,11 @@ class ProductDetailView extends StatelessWidget {
                             color: accentColor,
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            product.category.label,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                            Text(
+                              product.category.labelFor(settings.languageCode),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               color: theme.subtextColor,
                             ),
                           ),
@@ -234,11 +241,11 @@ class ProductDetailView extends StatelessWidget {
                       children: [
                         Icon(Icons.location_on_rounded, size: 16, color: theme.lavenderColor),
                         const SizedBox(width: 6),
-                        Text(
-                          'Origen: ${product.origin}',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
+                          Text(
+                           isEn ? 'Origin: ${product.origin}' : 'Origen: ${product.origin}',
+                           style: TextStyle(
+                             fontSize: 13,
+                             fontWeight: FontWeight.w500,
                             color: theme.textColor,
                           ),
                         ),
@@ -258,7 +265,7 @@ class ProductDetailView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Perfil de Sabor & Notas de Cata',
+                      isEn ? 'Flavor Profile & Tasting Notes' : 'Perfil de Sabor & Notas de Cata',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -302,7 +309,7 @@ class ProductDetailView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Reseña & Detalles',
+                      isEn ? 'Review & Details' : 'Reseña & Detalles',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -333,16 +340,16 @@ class ProductDetailView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Historial de Preparaciones',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
+                    Text(
+                      isEn ? 'Brew History' : 'Historial de Preparaciones',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
                           color: theme.textColor,
                         ),
                       ),
                       Text(
-                        '${productLogs.length} sesiones',
+                        isEn ? '${productLogs.length} sessions' : '${productLogs.length} sesiones',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -356,7 +363,9 @@ class ProductDetailView extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Text(
-                        'Aún no has registrado sesiones con este producto en el calendario.',
+                        isEn
+                            ? 'You have not logged any sessions with this product yet.'
+                            : 'Aún no has registrado sesiones con este producto en el calendario.',
                         style: TextStyle(
                           fontSize: 13,
                           color: theme.subtextColor,
@@ -381,7 +390,7 @@ class ProductDetailView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    DateFormat('dd MMM yyyy, HH:mm', 'es').format(log.dateTime),
+                                    DateFormat('dd MMM yyyy, HH:mm', settings.languageCode).format(log.dateTime),
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,

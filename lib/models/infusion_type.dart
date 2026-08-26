@@ -6,27 +6,33 @@ enum InfusionCategory {
   cafe,
   te;
 
-  String get label {
+  String labelFor(String languageCode) {
+    final isEn = languageCode == 'en';
     switch (this) {
       case InfusionCategory.mate:
-        return 'Yerba Mate';
+        return isEn ? 'Yerba Mate' : 'Yerba Mate';
       case InfusionCategory.cafe:
-        return 'Café';
+        return isEn ? 'Coffee' : 'Café';
       case InfusionCategory.te:
-        return 'Té';
+        return isEn ? 'Tea' : 'Té';
     }
   }
 
-  String get shortLabel {
+  String shortLabelFor(String languageCode) {
+    final isEn = languageCode == 'en';
     switch (this) {
       case InfusionCategory.mate:
-        return 'Mate';
+        return isEn ? 'Mate' : 'Mate';
       case InfusionCategory.cafe:
-        return 'Café';
+        return isEn ? 'Coffee' : 'Café';
       case InfusionCategory.te:
-        return 'Té';
+        return isEn ? 'Tea' : 'Té';
     }
   }
+
+  String get label => labelFor('es');
+
+  String get shortLabel => shortLabelFor('es');
 
   IconData get icon {
     switch (this) {
@@ -41,7 +47,11 @@ enum InfusionCategory {
 
   static InfusionCategory fromString(String value) {
     return InfusionCategory.values.firstWhere(
-      (e) => e.name.toLowerCase() == value.toLowerCase(),
+      (e) => e.name.toLowerCase() == value.toLowerCase() ||
+          e.labelFor('es').toLowerCase() == value.toLowerCase() ||
+          e.labelFor('en').toLowerCase() == value.toLowerCase() ||
+          e.shortLabelFor('es').toLowerCase() == value.toLowerCase() ||
+          e.shortLabelFor('en').toLowerCase() == value.toLowerCase(),
       orElse: () => InfusionCategory.mate,
     );
   }
@@ -66,32 +76,35 @@ enum InfusionType {
   teSaquito,
   teHebras;
 
-  String get label {
+  String labelFor(String languageCode) {
+    final isEn = languageCode == 'en';
     switch (this) {
       case InfusionType.mateTradicional:
-        return 'Mate Tradicional';
+        return isEn ? 'Traditional Mate' : 'Mate Tradicional';
       case InfusionType.mateDeLeche:
-        return 'Mate de Leche';
+        return isEn ? 'Mate with Milk' : 'Mate de Leche';
       case InfusionType.espresso:
         return 'Espresso';
       case InfusionType.cafeV60:
-        return 'Café V60';
+        return isEn ? 'V60 Coffee' : 'Café V60';
       case InfusionType.dripFiltrado:
-        return 'Drip / Filtrado';
+        return isEn ? 'Drip / Filtered' : 'Drip / Filtrado';
       case InfusionType.frenchPress:
         return 'French Press';
       case InfusionType.mokaPot:
         return 'Moka Pot';
       case InfusionType.cafeInstantaneo:
-        return 'Café Instantáneo';
+        return isEn ? 'Instant Coffee' : 'Café Instantáneo';
       case InfusionType.coldBrew:
         return 'Cold Brew';
       case InfusionType.teSaquito:
-        return 'Té en Saquito';
+        return isEn ? 'Tea Bag' : 'Té en Saquito';
       case InfusionType.teHebras:
-        return 'Té en Hebras';
+        return isEn ? 'Loose Leaf Tea' : 'Té en Hebras';
     }
   }
+
+  String get label => labelFor('es');
 
   InfusionCategory get category {
     switch (this) {
@@ -143,7 +156,7 @@ enum InfusionType {
   double get defaultTemperature {
     switch (this) {
       case InfusionType.mateTradicional:
-        return 78.0;
+        return 60.0;
       case InfusionType.mateDeLeche:
         return 72.0;
       case InfusionType.espresso:
@@ -226,9 +239,9 @@ enum InfusionType {
   List<double> get quickTemperaturePresets {
     switch (this) {
       case InfusionType.mateTradicional:
-        return [70.0, 75.0, 78.0, 80.0, 82.0];
+        return [60.0, 65.0, 70.0, 75.0, 80.0];
       case InfusionType.mateDeLeche:
-        return [65.0, 70.0, 72.0, 75.0, 78.0];
+        return [55.0, 60.0, 65.0, 70.0, 75.0];
       case InfusionType.espresso:
         return [90.0, 92.0, 93.0, 94.0, 96.0];
       case InfusionType.cafeV60:
@@ -253,7 +266,8 @@ enum InfusionType {
   static InfusionType fromString(String value) {
     return InfusionType.values.firstWhere(
       (e) => e.name.toLowerCase() == value.toLowerCase() ||
-          e.label.toLowerCase() == value.toLowerCase(),
+          e.labelFor('es').toLowerCase() == value.toLowerCase() ||
+          e.labelFor('en').toLowerCase() == value.toLowerCase(),
       orElse: () => InfusionType.mateTradicional,
     );
   }

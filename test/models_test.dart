@@ -9,7 +9,7 @@ void main() {
     test('Mate types belong to mate category', () {
       expect(InfusionType.mateTradicional.category, InfusionCategory.mate);
       expect(InfusionType.mateDeLeche.category, InfusionCategory.mate);
-      expect(InfusionType.mateTradicional.defaultTemperature, 78.0);
+      expect(InfusionType.mateTradicional.defaultTemperature, 60.0);
     });
 
     test('Coffee types belong to coffee category and have appropriate defaults', () {

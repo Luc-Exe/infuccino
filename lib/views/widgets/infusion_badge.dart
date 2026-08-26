@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/infusion_type.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/theme_provider.dart';
 
 class InfusionBadge extends StatelessWidget {
@@ -20,6 +21,7 @@ class InfusionBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
 
     Color badgeColor;
     switch (type.category) {
@@ -54,7 +56,7 @@ class InfusionBadge extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            type.label,
+            type.labelFor(settings.languageCode),
             style: TextStyle(
               color: badgeColor,
               fontSize: fontSize,

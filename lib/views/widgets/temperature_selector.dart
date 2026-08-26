@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/infusion_type.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/theme_provider.dart';
 
 class TemperatureSelector extends StatelessWidget {
@@ -31,8 +32,10 @@ class TemperatureSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
     final tempColor = _getTemperatureColor(context, temperature);
     final presets = infusionType.quickTemperaturePresets;
+    final isEn = settings.languageCode == 'en';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +52,7 @@ class TemperatureSelector extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Temperatura del agua / infusión',
+                   isEn ? 'Water / infusion temperature' : 'Temperatura del agua / infusión',
                   style: TextStyle(
                     color: theme.textColor,
                     fontSize: 14,

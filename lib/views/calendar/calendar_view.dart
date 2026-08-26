@@ -42,16 +42,17 @@ class _CalendarViewState extends State<CalendarView> {
   void _confirmDeleteLog(BuildContext context, InfusionLog log) {
     final theme = Provider.of<ThemeProvider>(context, listen: false);
     final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final isEn = settings.languageCode == 'en';
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(
-          settings.languageCode == 'en' ? 'Delete infusion?' : '¿Eliminar infusión?',
+          isEn ? 'Delete infusion?' : '¿Eliminar infusión?',
           style: TextStyle(color: theme.textColor),
         ),
         content: Text(
-          settings.languageCode == 'en'
+          isEn
               ? 'Are you sure you want to delete "${log.productName}" from ${DateFormat('MM/dd/yyyy HH:mm').format(log.dateTime)}?'
               : 'Se eliminará el registro de "${log.productName}" del ${DateFormat('dd/MM/yyyy HH:mm').format(log.dateTime)}.',
           style: TextStyle(color: theme.subtextColor),
@@ -59,7 +60,7 @@ class _CalendarViewState extends State<CalendarView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(settings.languageCode == 'en' ? 'Cancel' : 'Cancelar', style: TextStyle(color: theme.subtextColor)),
+            child: Text(isEn ? 'Cancel' : 'Cancelar', style: TextStyle(color: theme.subtextColor)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: theme.redColor),
@@ -67,7 +68,7 @@ class _CalendarViewState extends State<CalendarView> {
               Provider.of<InfusionProvider>(context, listen: false).deleteLog(log.id);
               Navigator.of(ctx).pop();
             },
-            child: Text(settings.languageCode == 'en' ? 'Delete' : 'Eliminar', style: const TextStyle(color: Colors.white)),
+            child: Text(isEn ? 'Delete' : 'Eliminar', style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -78,6 +79,7 @@ class _CalendarViewState extends State<CalendarView> {
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
     final infusionProvider = Provider.of<InfusionProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
 
@@ -88,7 +90,7 @@ class _CalendarViewState extends State<CalendarView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Menú & Configuración',
+          tooltip: isEn ? 'Menu & Settings' : 'Menú & Configuración',
           icon: Icon(Icons.tune_rounded, color: theme.lavenderColor),
           onPressed: () => SettingsDrawerModal.show(context),
         ),
@@ -96,12 +98,12 @@ class _CalendarViewState extends State<CalendarView> {
           children: [
             Icon(Icons.calendar_month_rounded, color: theme.lavenderColor),
             const SizedBox(width: 8),
-            Text(settings.languageCode == 'en' ? 'Infusion Agenda' : 'Agenda de Infusiones'),
+            Text(isEn ? 'Infusion Agenda' : 'Agenda de Infusiones'),
           ],
         ),
         actions: [
           IconButton(
-            tooltip: settings.languageCode == 'en' ? 'Go to Today' : 'Ir a Hoy',
+            tooltip: isEn ? 'Go to Today' : 'Ir a Hoy',
             icon: const Icon(Icons.today_rounded),
             onPressed: () {
               final now = DateTime.now();
@@ -115,7 +117,7 @@ class _CalendarViewState extends State<CalendarView> {
         foregroundColor: Colors.black87,
         icon: const Icon(Icons.add_rounded),
         label: Text(
-          settings.languageCode == 'en' ? 'New Infusion' : 'Registrar Infusión',
+          isEn ? 'New Infusion' : 'Registrar Infusión',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         onPressed: () => _openAddDialog(context, selectedDay),
@@ -268,7 +270,7 @@ class _CalendarViewState extends State<CalendarView> {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          settings.languageCode == 'en' ? 'TODAY' : 'HOY',
+                           isEn ? 'TODAY' : 'HOY',
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -280,7 +282,7 @@ class _CalendarViewState extends State<CalendarView> {
                   ],
                 ),
                 Text(
-                  '${dayLogs.length} ${dayLogs.length == 1 ? (settings.languageCode == "en" ? "infusion" : "infusión") : (settings.languageCode == "en" ? "infusions" : "infusiones")}',
+                  '${dayLogs.length} ${dayLogs.length == 1 ? (isEn ? "infusion" : "infusión") : (isEn ? "infusions" : "infusiones")}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -312,6 +314,7 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   Widget _buildEmptyState(ThemeProvider theme, SettingsProvider settings, DateTime date) {
+    final isEn = settings.languageCode == 'en';
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -325,7 +328,7 @@ class _CalendarViewState extends State<CalendarView> {
             ),
             const SizedBox(height: 12),
             Text(
-              settings.languageCode == 'en' ? 'No infusions recorded' : 'Sin infusiones registradas',
+              isEn ? 'No infusions recorded' : 'Sin infusiones registradas',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -334,7 +337,7 @@ class _CalendarViewState extends State<CalendarView> {
             ),
             const SizedBox(height: 6),
             Text(
-              settings.languageCode == 'en'
+              isEn
                   ? 'No records for this day.\nTap the + button to log a session!'
                   : 'No hay registros de mate, café o té para este día.\n¡Presiona el botón + para registrar uno!',
               textAlign: TextAlign.center,
@@ -353,7 +356,7 @@ class _CalendarViewState extends State<CalendarView> {
               ),
               onPressed: () => _openAddDialog(context, date),
               icon: const Icon(Icons.add_circle_outline_rounded),
-              label: Text(settings.languageCode == 'en' ? 'Log Now' : 'Registrar ahora'),
+              label: Text(isEn ? 'Log Now' : 'Registrar ahora'),
             ),
           ],
         ),
@@ -368,6 +371,7 @@ class _CalendarViewState extends State<CalendarView> {
     InfusionLog log,
     dynamic matchedProduct,
   ) {
+    final isEn = settings.languageCode == 'en';
     final timeStr = DateFormat('HH:mm').format(log.dateTime);
 
     return CatppuccinCard(
@@ -421,7 +425,7 @@ class _CalendarViewState extends State<CalendarView> {
                   } else if (action == 'duplicate') {
                     Provider.of<InfusionProvider>(context, listen: false).duplicateLog(log);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(settings.languageCode == 'en' ? 'Infusion duplicated for today' : 'Infusión duplicada para hoy')),
+                      SnackBar(content: Text(isEn ? 'Infusion duplicated for today' : 'Infusión duplicada para hoy')),
                     );
                   } else if (action == 'delete') {
                     _confirmDeleteLog(context, log);
@@ -434,7 +438,7 @@ class _CalendarViewState extends State<CalendarView> {
                       children: [
                         Icon(Icons.edit_outlined, size: 18, color: theme.lavenderColor),
                         const SizedBox(width: 8),
-                        Text(settings.languageCode == 'en' ? 'Edit' : 'Editar', style: TextStyle(color: theme.textColor)),
+                        Text(isEn ? 'Edit' : 'Editar', style: TextStyle(color: theme.textColor)),
                       ],
                     ),
                   ),
@@ -444,7 +448,7 @@ class _CalendarViewState extends State<CalendarView> {
                       children: [
                         Icon(Icons.copy_rounded, size: 18, color: theme.peachColor),
                         const SizedBox(width: 8),
-                        Text(settings.languageCode == 'en' ? 'Duplicate' : 'Duplicar', style: TextStyle(color: theme.textColor)),
+                        Text(isEn ? 'Duplicate' : 'Duplicar', style: TextStyle(color: theme.textColor)),
                       ],
                     ),
                   ),
@@ -454,7 +458,7 @@ class _CalendarViewState extends State<CalendarView> {
                       children: [
                         Icon(Icons.delete_outline_rounded, size: 18, color: theme.redColor),
                         const SizedBox(width: 8),
-                        Text(settings.languageCode == 'en' ? 'Delete' : 'Eliminar', style: TextStyle(color: theme.redColor)),
+                        Text(isEn ? 'Delete' : 'Eliminar', style: TextStyle(color: theme.redColor)),
                       ],
                     ),
                   ),
@@ -525,7 +529,7 @@ class _CalendarViewState extends State<CalendarView> {
                     Icon(Icons.scale_rounded, size: 16, color: theme.lavenderColor),
                     const SizedBox(width: 6),
                     Text(
-                      '${settings.formatWeight(log.weightGrams)} ${log.category.shortLabel.toLowerCase()}',
+                      '${settings.formatWeight(log.weightGrams)} ${log.category.shortLabelFor(settings.languageCode).toLowerCase()}',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

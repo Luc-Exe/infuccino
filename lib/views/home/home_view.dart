@@ -33,29 +33,38 @@ class _HomeViewState extends State<HomeView> {
     {
       'category': InfusionCategory.mate,
       'title': 'Yerba Mate',
+      'titleEn': 'Yerba Mate',
       'subtitle': 'Mate Tradicional & Mate de Leche',
+      'subtitleEn': 'Traditional Mate & Mate with Milk',
       'icon': Icons.eco_rounded,
-      'tempC': 78.0,
+      'tempC': 60.0,
       'weightG': 35.0,
       'description': 'Disfruta de una buena cebada artesanal.',
+      'descriptionEn': 'Enjoy a good artisanal brew.',
     },
     {
       'category': InfusionCategory.cafe,
       'title': 'Café de Especialidad',
+      'titleEn': 'Specialty Coffee',
       'subtitle': 'Espresso, V60, Drip, French Press & Moka',
+      'subtitleEn': 'Espresso, V60, Drip, French Press & Moka',
       'icon': Icons.coffee_rounded,
       'tempC': 93.0,
       'weightG': 18.0,
       'description': 'Extracciones limpias y aromáticas.',
+      'descriptionEn': 'Clean and aromatic extractions.',
     },
     {
       'category': InfusionCategory.te,
       'title': 'Té & Blends',
+      'titleEn': 'Tea & Blends',
       'subtitle': 'Té en Hebras & Saquitos',
+      'subtitleEn': 'Loose Leaf Tea & Tea Bags',
       'icon': Icons.emoji_food_beverage_rounded,
       'tempC': 85.0,
       'weightG': 3.5,
       'description': 'Infusiones botánicas, verdes y negras.',
+      'descriptionEn': 'Botanical, green, and black infusions.',
     },
   ];
 
@@ -75,6 +84,7 @@ class _HomeViewState extends State<HomeView> {
     final settings = Provider.of<SettingsProvider>(context);
     final infusionProvider = Provider.of<InfusionProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
+    final isEn = settings.languageCode == 'en';
 
     final today = DateTime.now();
     final todayLogs = infusionProvider.allLogs.where((log) {
@@ -103,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Menú & Configuración',
+          tooltip: isEn ? 'Menu & Settings' : 'Menú & Configuración',
           icon: Icon(Icons.tune_rounded, color: theme.lavenderColor),
           onPressed: () => SettingsDrawerModal.show(context),
         ),
@@ -132,7 +142,7 @@ class _HomeViewState extends State<HomeView> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Cambiar Tema Rápido',
+            tooltip: isEn ? 'Quick Theme Switch' : 'Cambiar Tema Rápido',
             icon: Icon(theme.currentThemeType.icon, color: theme.peachColor),
             onPressed: () => theme.toggleTheme(),
           ),
@@ -153,7 +163,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        settings.languageCode == 'en' ? 'Swipe to choose your beverage' : 'Desliza para elegir tu bebida',
+                        isEn ? 'Swipe to choose your beverage' : 'Desliza para elegir tu bebida',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -161,7 +171,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ),
                       Text(
-                        settings.languageCode == 'en' ? 'What are we brewing today?' : '¿Qué preparamos hoy?',
+                        isEn ? 'What are we brewing today?' : '¿Qué preparamos hoy?',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -273,7 +283,7 @@ class _HomeViewState extends State<HomeView> {
                                   Icon(Icons.swipe_rounded, size: 14, color: theme.subtextColor),
                                   const SizedBox(width: 4),
                                   Text(
-                                    settings.languageCode == 'en' ? 'Swipe' : 'Deslizar',
+                                    isEn ? 'Swipe' : 'Deslizar',
                                     style: TextStyle(fontSize: 11, color: theme.subtextColor),
                                   ),
                                 ],
@@ -285,7 +295,7 @@ class _HomeViewState extends State<HomeView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              bev['title'] as String,
+                              (isEn ? bev['titleEn'] : bev['title']) as String,
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w900,
@@ -294,7 +304,7 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              bev['subtitle'] as String,
+                              (isEn ? bev['subtitleEn'] : bev['subtitle']) as String,
                               style: TextStyle(
                                 fontSize: 13,
                                 color: theme.subtextColor,
@@ -349,8 +359,8 @@ class _HomeViewState extends State<HomeView> {
                 ),
                 icon: const Icon(Icons.flash_on_rounded, size: 22),
                 label: Text(
-                  settings.languageCode == 'en'
-                      ? 'Quick Brew ${currentBev['title']}'
+                  isEn
+                      ? 'Quick Brew ${(currentBev['titleEn'] ?? currentBev['title'])}'
                       : 'Añadir ${currentBev['title']} Rápido',
                   style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
                 ),
@@ -375,7 +385,7 @@ class _HomeViewState extends State<HomeView> {
                             Icon(Icons.today_rounded, size: 18, color: theme.lavenderColor),
                             const SizedBox(width: 6),
                             Text(
-                              settings.languageCode == 'en'
+                               isEn
                                   ? 'Today (${DateFormat('d MMM', 'en').format(today)})'
                                   : 'Hoy (${DateFormat('d MMM', 'es').format(today)})',
                               style: TextStyle(
@@ -390,7 +400,7 @@ class _HomeViewState extends State<HomeView> {
                           GestureDetector(
                             onTap: widget.onNavigateToAgenda,
                             child: Text(
-                              settings.languageCode == 'en' ? 'View Calendar >' : 'Ver Agenda >',
+                               isEn ? 'View Calendar >' : 'Ver Agenda >',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -403,7 +413,7 @@ class _HomeViewState extends State<HomeView> {
                     const SizedBox(height: 10),
                     if (todayLogs.isEmpty)
                       Text(
-                        settings.languageCode == 'en'
+                        isEn
                             ? 'No infusions logged yet today. Use the button above to add one!'
                             : 'Aún no has registrado infusiones hoy. ¡Usa el botón de arriba para registrar una!',
                         style: TextStyle(
@@ -454,7 +464,7 @@ class _HomeViewState extends State<HomeView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    settings.languageCode == 'en' ? 'Recent Preparations' : 'Últimas Preparaciones',
+                    isEn ? 'Recent Preparations' : 'Últimas Preparaciones',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -465,7 +475,7 @@ class _HomeViewState extends State<HomeView> {
                     GestureDetector(
                       onTap: widget.onNavigateToLista,
                       child: Text(
-                        settings.languageCode == 'en'
+                        isEn
                             ? 'View List (${productProvider.allProducts.length})'
                             : 'Ver Lista (${productProvider.allProducts.length})',
                         style: TextStyle(
@@ -483,7 +493,7 @@ class _HomeViewState extends State<HomeView> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 child: Text(
-                  settings.languageCode == 'en'
+                  isEn
                       ? 'No infusions recorded yet.'
                       : 'No hay infusiones registradas todavía.',
                   style: TextStyle(fontSize: 13, color: theme.subtextColor),
@@ -514,7 +524,7 @@ class _HomeViewState extends State<HomeView> {
                                   ),
                                 ),
                                 Text(
-                                  '${log.type.label} • ${settings.formatWeight(log.weightGrams)} • ${settings.formatTemperature(log.temperatureCelsius)}',
+                                   '${log.type.labelFor(settings.languageCode)} • ${settings.formatWeight(log.weightGrams)} • ${settings.formatTemperature(log.temperatureCelsius)}',
                                   style: TextStyle(fontSize: 11, color: theme.subtextColor),
                                 ),
                               ],

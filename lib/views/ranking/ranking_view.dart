@@ -94,6 +94,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
     final productProvider = Provider.of<ProductProvider>(context);
     final products = productProvider.filteredProducts;
 
@@ -121,7 +122,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Menú & Configuración',
+          tooltip: isEn ? 'Menu & Settings' : 'Menú & Configuración',
           icon: Icon(Icons.tune_rounded, color: theme.lavenderColor),
           onPressed: () => SettingsDrawerModal.show(context),
         ),
@@ -129,13 +130,13 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
           children: [
             Icon(Icons.format_list_numbered_rounded, color: theme.peachColor),
             const SizedBox(width: 8),
-            Text(settings.languageCode == 'en' ? 'Product List' : 'Lista de Productos'),
+            Text(isEn ? 'Product List' : 'Lista de Productos'),
           ],
         ),
         actions: [
           PopupMenuButton<ProductSortBy>(
             icon: const Icon(Icons.sort_rounded),
-            tooltip: settings.languageCode == 'en' ? 'Sort list' : 'Ordenar lista',
+             tooltip: isEn ? 'Sort list' : 'Ordenar lista',
             color: theme.surfaceColor,
             onSelected: (sort) => productProvider.setSortBy(sort),
             itemBuilder: (ctx) => [
@@ -146,7 +147,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     Icon(Icons.star_rounded, size: 18, color: theme.peachColor),
                     const SizedBox(width: 8),
                     Text(
-                      settings.languageCode == 'en' ? 'By Score / Rating' : 'Por Puntuación / Ranking',
+                       isEn ? 'By Score / Rating' : 'Por Puntuación / Ranking',
                       style: TextStyle(color: theme.textColor),
                     ),
                   ],
@@ -159,7 +160,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     Icon(Icons.sort_by_alpha_rounded, size: 18, color: theme.lavenderColor),
                     const SizedBox(width: 8),
                     Text(
-                      settings.languageCode == 'en' ? 'Alphabetical (Name)' : 'Alfabético (Nombre)',
+                       isEn ? 'Alphabetical (Name)' : 'Alfabético (Nombre)',
                       style: TextStyle(color: theme.textColor),
                     ),
                   ],
@@ -172,7 +173,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     Icon(Icons.access_time_rounded, size: 18, color: theme.tealColor),
                     const SizedBox(width: 8),
                     Text(
-                      settings.languageCode == 'en' ? 'Recently Added' : 'Más Recientes',
+                       isEn ? 'Recently Added' : 'Más Recientes',
                       style: TextStyle(color: theme.textColor),
                     ),
                   ],
@@ -208,7 +209,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     children: [
                       const Icon(Icons.eco_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'Mate' : 'Mate'),
+                      Text(isEn ? 'Mate' : 'Mate'),
                     ],
                   ),
                 ),
@@ -218,7 +219,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     children: [
                       const Icon(Icons.coffee_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'Coffee' : 'Café'),
+                      Text(isEn ? 'Coffee' : 'Café'),
                     ],
                   ),
                 ),
@@ -228,7 +229,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     children: [
                       const Icon(Icons.emoji_food_beverage_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'Tea' : 'Té'),
+                      Text(isEn ? 'Tea' : 'Té'),
                     ],
                   ),
                 ),
@@ -238,7 +239,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
                     children: [
                       const Icon(Icons.star_outline_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'All' : 'Todos'),
+                      Text(isEn ? 'All' : 'Todos'),
                     ],
                   ),
                 ),
@@ -253,10 +254,10 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
         icon: const Icon(Icons.add_photo_alternate_rounded),
         label: Text(
           currentCategory == InfusionCategory.mate
-              ? (settings.languageCode == 'en' ? 'New Yerba' : 'Nueva Yerba')
+              ? (isEn ? 'New Mate' : 'Nueva Yerba')
               : currentCategory == InfusionCategory.cafe
-                  ? (settings.languageCode == 'en' ? 'New Coffee' : 'Nuevo Café')
-                  : (settings.languageCode == 'en' ? 'New Tea' : 'Nuevo Té'),
+                  ? (isEn ? 'New Coffee' : 'Nuevo Café')
+                  : (isEn ? 'New Tea' : 'Nuevo Té'),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         onPressed: () => _openAddProductDialog(context, currentCategory),
@@ -269,7 +270,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: settings.languageCode == 'en'
+                hintText: isEn
                     ? 'Search by name, brand, tasting notes or origin...'
                     : 'Buscar por nombre, marca, notas de cata u origen...',
                 prefixIcon: const Icon(Icons.search_rounded, size: 20),
@@ -311,6 +312,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
   }
 
   Widget _buildEmptyState(ThemeProvider theme, SettingsProvider settings) {
+    final isEn = settings.languageCode == 'en';
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -324,7 +326,7 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
             ),
             const SizedBox(height: 12),
             Text(
-              settings.languageCode == 'en' ? 'No products found' : 'No se encontraron productos',
+               isEn ? 'No products found' : 'No se encontraron productos',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -333,9 +335,9 @@ class _RankingViewState extends State<RankingView> with SingleTickerProviderStat
             ),
             const SizedBox(height: 6),
             Text(
-              settings.languageCode == 'en'
-                  ? 'Try another search or add a new product with photos and rating.'
-                  : 'Prueba con otra búsqueda o agrega un nuevo producto a la lista con fotos y calificación.',
+               isEn
+                   ? 'Try another search or add a new product with photos and rating.'
+                   : 'Prueba con otra búsqueda o agrega un nuevo producto a la lista con fotos y calificación.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,

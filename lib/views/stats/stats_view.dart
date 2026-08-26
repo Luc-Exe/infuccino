@@ -35,11 +35,12 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Menú & Configuración',
+          tooltip: isEn ? 'Menu & Settings' : 'Menú & Configuración',
           icon: Icon(Icons.tune_rounded, color: theme.lavenderColor),
           onPressed: () => SettingsDrawerModal.show(context),
         ),
@@ -47,7 +48,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
           children: [
             Icon(Icons.bar_chart_rounded, color: theme.tealColor),
             const SizedBox(width: 8),
-            Text(settings.languageCode == 'en' ? 'Statistics & Overview' : 'Estadísticas & Resumen'),
+            Text(isEn ? 'Statistics & Overview' : 'Estadísticas & Resumen'),
           ],
         ),
         bottom: PreferredSize(
@@ -77,7 +78,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                     children: [
                       const Icon(Icons.analytics_outlined, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'General' : 'General'),
+                      Text(isEn ? 'Overview' : 'General'),
                     ],
                   ),
                 ),
@@ -87,7 +88,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                     children: [
                       const Icon(Icons.eco_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'Mate' : 'Mate'),
+                      Text(isEn ? 'Mate' : 'Mate'),
                     ],
                   ),
                 ),
@@ -97,7 +98,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                     children: [
                       const Icon(Icons.coffee_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'Coffee' : 'Café'),
+                      Text(isEn ? 'Coffee' : 'Café'),
                     ],
                   ),
                 ),
@@ -107,7 +108,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                     children: [
                       const Icon(Icons.emoji_food_beverage_rounded, size: 15),
                       const SizedBox(width: 4),
-                      Text(settings.languageCode == 'en' ? 'Tea' : 'Té'),
+                      Text(isEn ? 'Tea' : 'Té'),
                     ],
                   ),
                 ),
@@ -130,6 +131,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
 
   // Tab 1: General Stats
   Widget _buildGeneralTab(BuildContext context, ThemeProvider theme, SettingsProvider settings) {
+    final isEn = settings.languageCode == 'en';
     final infusionProvider = Provider.of<InfusionProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
 
@@ -161,7 +163,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            settings.languageCode == 'en' ? 'Total Sessions' : 'Total Sesiones',
+                            isEn ? 'Total Sessions' : 'Total Sesiones',
                             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.subtextColor),
                           ),
                           Icon(Icons.local_cafe_rounded, size: 20, color: theme.lavenderColor),
@@ -174,7 +176,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '$mateCount mates • $cafeCount cafés • $teCount tés',
+                        isEn ? '$mateCount mates • $cafeCount coffees • $teCount teas' : '$mateCount mates • $cafeCount cafés • $teCount tés',
                         style: TextStyle(fontSize: 11, color: theme.subtextColor),
                       ),
                     ],
@@ -192,7 +194,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            settings.languageCode == 'en' ? 'In List' : 'En Lista',
+                            isEn ? 'In List' : 'En Lista',
                             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.subtextColor),
                           ),
                           Icon(Icons.inventory_2_rounded, size: 20, color: theme.peachColor),
@@ -205,7 +207,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        settings.languageCode == 'en' ? 'Products registered' : 'Productos registrados',
+                        isEn ? 'Products registered' : 'Productos registrados',
                         style: TextStyle(fontSize: 11, color: theme.subtextColor),
                       ),
                     ],
@@ -224,7 +226,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    settings.languageCode == 'en' ? 'Global Consumption Breakdown' : 'Distribución Global de Consumo',
+                    isEn ? 'Global Consumption Breakdown' : 'Distribución Global de Consumo',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: theme.textColor),
                   ),
                   const SizedBox(height: 12),
@@ -255,9 +257,9 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                     spacing: 12,
                     runSpacing: 6,
                     children: [
-                      _buildLegendDot(theme.greenColor, 'Mate: ${((mateCount / total) * 100).toStringAsFixed(0)}% ($mateCount)', theme),
-                      _buildLegendDot(theme.peachColor, 'Café: ${((cafeCount / total) * 100).toStringAsFixed(0)}% ($cafeCount)', theme),
-                      _buildLegendDot(theme.tealColor, 'Té: ${((teCount / total) * 100).toStringAsFixed(0)}% ($teCount)', theme),
+                      _buildLegendDot(theme.greenColor, isEn ? 'Mate: ${((mateCount / total) * 100).toStringAsFixed(0)}% ($mateCount)' : 'Mate: ${((mateCount / total) * 100).toStringAsFixed(0)}% ($mateCount)', theme),
+                      _buildLegendDot(theme.peachColor, isEn ? 'Coffee: ${((cafeCount / total) * 100).toStringAsFixed(0)}% ($cafeCount)' : 'Café: ${((cafeCount / total) * 100).toStringAsFixed(0)}% ($cafeCount)', theme),
+                      _buildLegendDot(theme.tealColor, isEn ? 'Tea: ${((teCount / total) * 100).toStringAsFixed(0)}% ($teCount)' : 'Té: ${((teCount / total) * 100).toStringAsFixed(0)}% ($teCount)', theme),
                     ],
                   ),
                 ],
@@ -273,7 +275,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  settings.languageCode == 'en' ? 'Global Averages' : 'Promedios Globales',
+                    isEn ? 'Global Averages' : 'Promedios Globales',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: theme.textColor),
                 ),
                 const SizedBox(height: 16),
@@ -284,7 +286,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       theme: theme,
                       icon: Icons.thermostat_rounded,
                       color: theme.peachColor,
-                      title: settings.languageCode == 'en' ? 'Temperature' : 'Temperatura',
+                       title: isEn ? 'Temperature' : 'Temperatura',
                       value: total > 0 ? settings.formatTemperature(avgTemp) : '-',
                     ),
                     Container(width: 1, height: 40, color: theme.surface1Color),
@@ -292,7 +294,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       theme: theme,
                       icon: Icons.scale_rounded,
                       color: theme.lavenderColor,
-                      title: settings.languageCode == 'en' ? 'Avg Weight' : 'Peso Promedio',
+                       title: isEn ? 'Avg Weight' : 'Peso Promedio',
                       value: total > 0 ? settings.formatWeight(avgWeight) : '-',
                     ),
                     Container(width: 1, height: 40, color: theme.surface1Color),
@@ -300,7 +302,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       theme: theme,
                       icon: Icons.star_rounded,
                       color: theme.yellowColor,
-                      title: settings.languageCode == 'en' ? 'Rating' : 'Calificación',
+                       title: isEn ? 'Rating' : 'Calificación',
                       value: avgRating > 0 ? avgRating.toStringAsFixed(1) : '-',
                     ),
                   ],
@@ -330,12 +332,12 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          settings.languageCode == 'en' ? 'Most Frequent Method' : 'Método Más Frecuente',
+                           isEn ? 'Most Frequent Method' : 'Método Más Frecuente',
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: theme.subtextColor),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          favoriteType.label,
+                           favoriteType.labelFor(settings.languageCode),
                           style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: theme.textColor),
                         ),
                       ],
@@ -355,7 +357,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  settings.languageCode == 'en' ? 'Breakdown by Infusion Type' : 'Desglose por Tipo de Infusión',
+                    isEn ? 'Breakdown by Infusion Type' : 'Desglose por Tipo de Infusión',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: theme.textColor),
                 ),
                 const SizedBox(height: 14),
@@ -387,12 +389,12 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                type.label,
+                                type.labelFor(settings.languageCode),
                                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.textColor),
                               ),
                             ),
                             Text(
-                              '$count ${count == 1 ? (settings.languageCode == "en" ? "session" : "sesión") : (settings.languageCode == "en" ? "sessions" : "sesiones")}',
+                                '$count ${count == 1 ? (isEn ? "session" : "sesión") : (isEn ? "sessions" : "sesiones")}',
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: theme.textColor),
                             ),
                           ],
@@ -426,6 +428,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
     SettingsProvider settings,
     InfusionCategory category,
   ) {
+    final isEn = settings.languageCode == 'en';
     final infusionProvider = Provider.of<InfusionProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
 
@@ -477,7 +480,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        category.label,
+                        category.labelFor(settings.languageCode),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -486,7 +489,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        settings.languageCode == 'en'
+                        isEn
                             ? '$totalCat ${totalCat == 1 ? "session" : "sessions"} logged • ${relevantProducts.length} in list'
                             : '$totalCat ${totalCat == 1 ? "sesión registrada" : "sesiones registradas"} • ${relevantProducts.length} en lista',
                         style: TextStyle(fontSize: 12, color: theme.subtextColor),
@@ -506,9 +509,9 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  settings.languageCode == 'en'
-                      ? 'Extraction Averages (${category.shortLabel})'
-                      : 'Promedios de Extracción (${category.shortLabel})',
+                  isEn
+                      ? 'Extraction Averages (${category.shortLabelFor(settings.languageCode)})'
+                      : 'Promedios de Extracción (${category.shortLabelFor(settings.languageCode)})',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: theme.textColor),
                 ),
                 const SizedBox(height: 16),
@@ -519,7 +522,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       theme: theme,
                       icon: Icons.thermostat_rounded,
                       color: accentColor,
-                      title: settings.languageCode == 'en' ? 'Temperature' : 'Temperatura',
+                      title: isEn ? 'Temperature' : 'Temperatura',
                       value: totalCat > 0 ? settings.formatTemperature(avgTemp) : '-',
                     ),
                     Container(width: 1, height: 40, color: theme.surface1Color),
@@ -527,7 +530,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       theme: theme,
                       icon: Icons.scale_rounded,
                       color: theme.lavenderColor,
-                      title: settings.languageCode == 'en' ? 'Avg Weight' : 'Peso Promedio',
+                      title: isEn ? 'Avg Weight' : 'Peso Promedio',
                       value: totalCat > 0 ? settings.formatWeight(avgWeight) : '-',
                     ),
                     Container(width: 1, height: 40, color: theme.surface1Color),
@@ -535,7 +538,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       theme: theme,
                       icon: Icons.star_rounded,
                       color: theme.yellowColor,
-                      title: settings.languageCode == 'en' ? 'Rating' : 'Calificación',
+                      title: isEn ? 'Rating' : 'Calificación',
                       value: avgRating > 0 ? avgRating.toStringAsFixed(1) : '-',
                     ),
                   ],
@@ -558,13 +561,13 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          settings.languageCode == 'en'
-                              ? 'Most brewed ${category.shortLabel.toLowerCase()}'
-                              : 'Tipo de ${category.shortLabel} más preparado',
+                           isEn
+                               ? 'Most brewed ${category.shortLabelFor(settings.languageCode).toLowerCase()}'
+                               : 'Tipo de ${category.shortLabelFor(settings.languageCode)} más preparado',
                           style: TextStyle(fontSize: 12, color: theme.subtextColor),
                         ),
                         Text(
-                          favType.label,
+                           favType.labelFor(settings.languageCode),
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: theme.textColor),
                         ),
                       ],
@@ -584,7 +587,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  settings.languageCode == 'en' ? 'Methods of ${category.label}' : 'Métodos de ${category.label}',
+                  isEn ? 'Methods of ${category.labelFor(settings.languageCode)}' : 'Métodos de ${category.labelFor(settings.languageCode)}',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: theme.textColor),
                 ),
                 const SizedBox(height: 14),
@@ -603,12 +606,12 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                type.label,
+                                type.labelFor(settings.languageCode),
                                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: theme.textColor),
                               ),
                             ),
                             Text(
-                              '$count ${count == 1 ? (settings.languageCode == "en" ? "session" : "sesión") : (settings.languageCode == "en" ? "sessions" : "sesiones")} (${(pct * 100).toStringAsFixed(0)}%)',
+                              '$count ${count == 1 ? (isEn ? "session" : "sesión") : (isEn ? "sessions" : "sesiones")} (${(pct * 100).toStringAsFixed(0)}%)',
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: theme.textColor),
                             ),
                           ],
@@ -639,7 +642,7 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  settings.languageCode == 'en' ? 'Top in List (${category.label})' : 'Top en Lista (${category.label})',
+                  isEn ? 'Top in List (${category.labelFor(settings.languageCode)})' : 'Top en Lista (${category.labelFor(settings.languageCode)})',
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: theme.textColor),
                 ),
                 const SizedBox(height: 10),
@@ -647,9 +650,9 @@ class _StatsViewState extends State<StatsView> with SingleTickerProviderStateMix
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      settings.languageCode == 'en'
-                          ? 'No products added in this category.'
-                          : 'No hay productos agregados en esta categoría.',
+                       isEn
+                           ? 'No products added in this category.'
+                           : 'No hay productos agregados en esta categoría.',
                       style: TextStyle(color: theme.subtextColor, fontSize: 13),
                     ),
                   )

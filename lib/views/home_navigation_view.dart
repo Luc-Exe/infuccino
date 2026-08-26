@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/theme_provider.dart';
 import 'calendar/calendar_view.dart';
 import 'home/home_view.dart';
@@ -25,6 +26,8 @@ class _HomeNavigationViewState extends State<HomeNavigationView> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
+    final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
 
     final List<Widget> screens = [
       HomeView(
@@ -50,26 +53,26 @@ class _HomeNavigationViewState extends State<HomeNavigationView> {
         },
         backgroundColor: theme.mantleColor,
         indicatorColor: theme.surface1Color,
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home_rounded),
-            label: 'Inicio',
+            label: isEn ? 'Home' : 'Inicio',
           ),
           NavigationDestination(
             icon: Icon(Icons.calendar_today_outlined),
             selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Agenda',
+            label: isEn ? 'Calendar' : 'Agenda',
           ),
           NavigationDestination(
             icon: Icon(Icons.format_list_bulleted_rounded),
             selectedIcon: Icon(Icons.format_list_numbered_rounded),
-            label: 'Lista',
+            label: isEn ? 'List' : 'Lista',
           ),
           NavigationDestination(
             icon: Icon(Icons.bar_chart_outlined),
             selectedIcon: Icon(Icons.bar_chart_rounded),
-            label: 'Estadísticas',
+            label: isEn ? 'Statistics' : 'Estadísticas',
           ),
         ],
       ),

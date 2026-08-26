@@ -26,6 +26,7 @@ class SettingsDrawerModal extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
     final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
 
     return SafeArea(
       child: Container(
@@ -60,7 +61,7 @@ class SettingsDrawerModal extends StatelessWidget {
                       Icon(Icons.tune_rounded, color: theme.lavenderColor, size: 24),
                       const SizedBox(width: 8),
                       Text(
-                        'Configuración & Opciones',
+                        isEn ? 'Settings & Options' : 'Configuración & Opciones',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -79,7 +80,7 @@ class SettingsDrawerModal extends StatelessWidget {
 
               // 1. Idioma (Language)
               Text(
-                'Idioma / Language',
+                isEn ? 'Language' : 'Idioma / Language',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -94,7 +95,7 @@ class SettingsDrawerModal extends StatelessWidget {
                       avatar: Text('🇪🇸', style: const TextStyle(fontSize: 14)),
                       label: Center(
                         child: Text(
-                          'Español (ES)',
+                           isEn ? 'Spanish (ES)' : 'Español (ES)',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -140,7 +141,7 @@ class SettingsDrawerModal extends StatelessWidget {
 
               // 2. Sistema de Medidas (Units)
               Text(
-                'Sistema de Medidas',
+                isEn ? 'Measurement System' : 'Sistema de Medidas',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -155,7 +156,7 @@ class SettingsDrawerModal extends StatelessWidget {
                       avatar: const Icon(Icons.straighten_rounded, size: 16),
                       label: Center(
                         child: Text(
-                          'Métrico (g, ml, °C)',
+                           isEn ? 'Metric (g, ml, °C)' : 'Métrico (g, ml, °C)',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
@@ -201,7 +202,7 @@ class SettingsDrawerModal extends StatelessWidget {
 
               // 3. Selector de Temas Visuales
               Text(
-                'Tema Visual',
+                isEn ? 'Visual Theme' : 'Tema Visual',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -239,7 +240,7 @@ class SettingsDrawerModal extends StatelessWidget {
 
               // 4. Copia de Seguridad & Persistencia (Anti-borrado)
               Text(
-                'Copia de Seguridad & Persistencia',
+                isEn ? 'Backup & Persistence' : 'Copia de Seguridad & Persistencia',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -264,7 +265,7 @@ class SettingsDrawerModal extends StatelessWidget {
                         child: Icon(Icons.file_download_rounded, color: theme.greenColor, size: 20),
                       ),
                       title: Text(
-                        'Exportar Datos (JSON)',
+                        isEn ? 'Export Data (JSON)' : 'Exportar Datos (JSON)',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -272,16 +273,18 @@ class SettingsDrawerModal extends StatelessWidget {
                         ),
                       ),
                       subtitle: Text(
-                        'Guarda todas tus infusiones, productos y lista en un archivo .json',
+                        isEn
+                            ? 'Save all your infusions, products, and lists to a .json file'
+                            : 'Guarda todas tus infusiones, productos y lista en un archivo .json',
                         style: TextStyle(fontSize: 11, color: theme.subtextColor),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                       onTap: () async {
                         final success = await BackupService.instance.exportBackup(context);
                         if (context.mounted && success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Copia de respaldo exportada exitosamente')),
-                          );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(isEn ? 'Backup exported successfully' : 'Copia de respaldo exportada exitosamente')),
+                            );
                         }
                       },
                     ),
@@ -298,7 +301,7 @@ class SettingsDrawerModal extends StatelessWidget {
                         child: Icon(Icons.file_upload_rounded, color: theme.peachColor, size: 20),
                       ),
                       title: Text(
-                        'Importar Backup (JSON)',
+                        isEn ? 'Import Backup (JSON)' : 'Importar Backup (JSON)',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -306,7 +309,9 @@ class SettingsDrawerModal extends StatelessWidget {
                         ),
                       ),
                       subtitle: Text(
-                        'Restaura tus datos guardados desde un archivo previo',
+                        isEn
+                            ? 'Restore your saved data from a previous file'
+                            : 'Restaura tus datos guardados desde un archivo previo',
                         style: TextStyle(fontSize: 11, color: theme.subtextColor),
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
@@ -318,7 +323,9 @@ class SettingsDrawerModal extends StatelessWidget {
                             context: context,
                             builder: (dialogCtx) => AlertDialog(
                               title: Text(
-                                result.startsWith('SUCCESS') ? '¡Restauración Exitosa!' : 'Aviso',
+                                result.startsWith('SUCCESS')
+                                    ? (isEn ? 'Restore complete' : '¡Restauración Exitosa!')
+                                    : (isEn ? 'Notice' : 'Aviso'),
                                 style: TextStyle(color: theme.textColor),
                               ),
                               content: Text(
@@ -328,7 +335,7 @@ class SettingsDrawerModal extends StatelessWidget {
                               actions: [
                                 ElevatedButton(
                                   onPressed: () => Navigator.of(dialogCtx).pop(),
-                                  child: const Text('Entendido'),
+                                  child: Text(isEn ? 'Got it' : 'Entendido'),
                                 ),
                               ],
                             ),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../models/infusion_type.dart';
 import '../../models/product.dart';
 import '../../providers/product_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/image_service.dart';
 import '../widgets/expandable_tasting_notes.dart';
@@ -83,6 +84,8 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
 
   void _showImageSourcePicker() {
     final theme = Provider.of<ThemeProvider>(context, listen: false);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final isEn = settings.languageCode == 'en';
     showModalBottomSheet(
       context: context,
       backgroundColor: theme.surfaceColor,
@@ -96,7 +99,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Seleccionar Foto del Producto',
+                isEn ? 'Select Product Photo' : 'Seleccionar Foto del Producto',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -106,7 +109,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
               const SizedBox(height: 16),
               ListTile(
                 leading: Icon(Icons.camera_alt_rounded, color: theme.lavenderColor),
-                title: Text('Tomar Foto con la Cámara', style: TextStyle(color: theme.textColor)),
+                title: Text(isEn ? 'Take Photo with Camera' : 'Tomar Foto con la Cámara', style: TextStyle(color: theme.textColor)),
                 onTap: () {
                   Navigator.of(ctx).pop();
                   _pickImage(ImageSource.camera);
@@ -114,7 +117,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
               ),
               ListTile(
                 leading: Icon(Icons.photo_library_rounded, color: theme.peachColor),
-                title: Text('Elegir de la Galería', style: TextStyle(color: theme.textColor)),
+                title: Text(isEn ? 'Choose from Gallery' : 'Elegir de la Galería', style: TextStyle(color: theme.textColor)),
                 onTap: () {
                   Navigator.of(ctx).pop();
                   _pickImage(ImageSource.gallery);
@@ -123,7 +126,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
               if (_imagePath != null)
                 ListTile(
                   leading: Icon(Icons.delete_outline_rounded, color: theme.redColor),
-                  title: Text('Quitar Foto Actual', style: TextStyle(color: theme.redColor)),
+                  title: Text(isEn ? 'Remove Current Photo' : 'Quitar Foto Actual', style: TextStyle(color: theme.redColor)),
                   onTap: () {
                     Navigator.of(ctx).pop();
                     setState(() {
@@ -176,6 +179,8 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeProvider>(context);
+    final settings = Provider.of<SettingsProvider>(context);
+    final isEn = settings.languageCode == 'en';
 
     Color accentColor;
     switch (_category) {
@@ -215,7 +220,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          widget.existingProduct != null ? 'Editar en Lista' : 'Añadir a la Lista',
+                          widget.existingProduct != null ? (isEn ? 'Edit List Item' : 'Editar en Lista') : (isEn ? 'Add to List' : 'Añadir a la Lista'),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -266,7 +271,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                                     Icon(Icons.add_a_photo_rounded, size: 32, color: accentColor),
                                     const SizedBox(height: 6),
                                     Text(
-                                      'Añadir Foto',
+                                      isEn ? 'Add Photo' : 'Añadir Foto',
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
@@ -279,7 +284,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Cámara o Galería local',
+                        isEn ? 'Camera or local gallery' : 'Cámara o Galería local',
                         style: TextStyle(fontSize: 11, color: theme.subtextColor),
                       ),
                     ],
@@ -299,7 +304,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                         ),
                         label: Center(
                           child: Text(
-                            'Mate',
+                            isEn ? 'Mate' : 'Mate',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -330,7 +335,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                         ),
                         label: Center(
                           child: Text(
-                            'Café',
+                            isEn ? 'Coffee' : 'Café',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -361,7 +366,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                         ),
                         label: Center(
                           child: Text(
-                            'Té',
+                            isEn ? 'Tea' : 'Té',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -391,19 +396,19 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     labelText: _category == InfusionCategory.mate
-                        ? 'Nombre de la Yerba'
+                        ? (isEn ? 'Mate name' : 'Nombre de la Yerba')
                         : _category == InfusionCategory.cafe
-                            ? 'Nombre del Café / Varietal'
-                            : 'Nombre del Té / Variedad',
+                            ? (isEn ? 'Coffee name / varietal' : 'Nombre del Café / Varietal')
+                            : (isEn ? 'Tea name / variety' : 'Nombre del Té / Variedad'),
                     hintText: _category == InfusionCategory.mate
-                        ? 'Ej: Canarias Serena'
+                        ? (isEn ? 'Ex: Canarias Serena' : 'Ej: Canarias Serena')
                         : _category == InfusionCategory.cafe
-                            ? 'Ej: Geisha Los Pozos'
-                            : 'Ej: Earl Grey Imperial',
+                            ? (isEn ? 'Ex: Geisha Los Pozos' : 'Ej: Geisha Los Pozos')
+                            : (isEn ? 'Ex: Earl Grey Imperial' : 'Ej: Earl Grey Imperial'),
                     prefixIcon: const Icon(Icons.label_rounded, size: 20),
                   ),
                   validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'El nombre es obligatorio';
+                    if (v == null || v.trim().isEmpty) return isEn ? 'Name is required' : 'El nombre es obligatorio';
                     return null;
                   },
                 ),
@@ -413,9 +418,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     Expanded(
                       child: TextFormField(
                         controller: _brandController,
-                        decoration: const InputDecoration(
-                          labelText: 'Marca / Productor',
-                          hintText: 'Ej: Playadito, Twinings',
+                        decoration: InputDecoration(
+                          labelText: isEn ? 'Brand / Producer' : 'Marca / Productor',
+                          hintText: isEn ? 'Ex: Playadito, Twinings' : 'Ej: Playadito, Twinings',
                           prefixIcon: Icon(Icons.business_rounded, size: 20),
                         ),
                       ),
@@ -424,9 +429,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     Expanded(
                       child: TextFormField(
                         controller: _originController,
-                        decoration: const InputDecoration(
-                          labelText: 'Origen / Región',
-                          hintText: 'Ej: Misiones, Sri Lanka',
+                        decoration: InputDecoration(
+                          labelText: isEn ? 'Origin / Region' : 'Origen / Región',
+                          hintText: isEn ? 'Ex: Misiones, Sri Lanka' : 'Ej: Misiones, Sri Lanka',
                           prefixIcon: Icon(Icons.public_rounded, size: 20),
                         ),
                       ),
@@ -443,7 +448,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Puntuación en la Lista',
+                          isEn ? 'List Ranking Score' : 'Puntuación en la Lista',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -451,7 +456,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                           ),
                         ),
                         Text(
-                          'Define su posición de ranking',
+                          isEn ? 'Defines its ranking position' : 'Define su posición de ranking',
                           style: TextStyle(fontSize: 11, color: theme.subtextColor),
                         ),
                       ],
@@ -486,9 +491,11 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: 'Descripción / Reseña Personal',
-                    hintText: 'Describe el aroma, secado, cuerpo, estacionamiento o notas...',
+                  decoration: InputDecoration(
+                    labelText: isEn ? 'Description / Personal review' : 'Descripción / Reseña Personal',
+                    hintText: isEn
+                        ? 'Describe the aroma, processing, body, aging, or notes...'
+                        : 'Describe el aroma, secado, cuerpo, estacionamiento o notas...',
                     prefixIcon: Icon(Icons.notes_rounded, size: 20),
                   ),
                 ),
@@ -506,7 +513,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     ),
                     icon: const Icon(Icons.check_circle_rounded),
                     label: Text(
-                      widget.existingProduct != null ? 'Guardar Cambios' : 'Guardar en la Lista',
+                      widget.existingProduct != null ? (isEn ? 'Save Changes' : 'Guardar Cambios') : (isEn ? 'Save to List' : 'Guardar en la Lista'),
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     onPressed: _submitForm,

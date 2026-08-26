@@ -192,7 +192,7 @@ class DatabaseService {
         productName: 'Canarias Serena',
         weightGrams: 35.0,
         waterVolumeMl: 750.0,
-        temperatureCelsius: 78.0,
+        temperatureCelsius: 60.0,
         rating: 5.0,
         notes: 'Espuma abundante y excelente aguante del mate matutino.',
       ),
