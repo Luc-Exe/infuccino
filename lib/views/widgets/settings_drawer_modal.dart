@@ -92,10 +92,10 @@ class SettingsDrawerModal extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ChoiceChip(
-                      avatar: Text('🇪🇸', style: const TextStyle(fontSize: 14)),
+                      avatar: Text('🇦🇷', style: const TextStyle(fontSize: 14)),
                       label: Center(
                         child: Text(
-                           isEn ? 'Spanish (ES)' : 'Español (ES)',
+                           isEn ? 'Spanish (AR)' : 'Español (AR)',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -378,7 +378,7 @@ class SettingsDrawerModal extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      SettingsProvider.aboutText,
+                      settings.aboutText,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

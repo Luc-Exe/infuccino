@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:agenda_de_infusiones/models/infusion_type.dart';
 import 'package:agenda_de_infusiones/models/product.dart';
@@ -59,7 +60,10 @@ void main() {
     });
 
     test('About text attribution', () {
-      expect(SettingsProvider.aboutText, 'Hecho con amor ❤️ por Luc-Exe');
+      final settings = SettingsProvider();
+      expect(settings.aboutText, 'Hecho con amor ❤️ por Luc-Exe');
+      settings.setLocale(const Locale('en', 'US'));
+      expect(settings.aboutText, 'Made with love ❤️ by Luc-Exe');
     });
   });
 

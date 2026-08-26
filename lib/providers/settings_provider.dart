@@ -23,7 +23,9 @@ class SettingsProvider extends ChangeNotifier {
   UnitSystem get unitSystem => _unitSystem;
   bool get isMetric => _unitSystem == UnitSystem.metric;
 
-  static const String aboutText = 'Hecho con amor ❤️ por Luc-Exe';
+  String get aboutText => _locale.languageCode == 'en'
+      ? 'Made with love ❤️ by Luc-Exe'
+      : 'Hecho con amor ❤️ por Luc-Exe';
   static const String appVersion = '1.1.0';
 
   void setLocale(Locale newLocale) {
